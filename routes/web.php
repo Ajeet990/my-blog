@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BlogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +16,9 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('registration');
+    // Route::view("signup", "registration");
+
 });
 // Route::view("test")
 Route::get("logout", [UserController::class, 'logout']);
@@ -24,3 +27,8 @@ Route::post('register', [UserController::class, 'register']);
 Route::view('login', "login");
 Route::post('userLogin', [UserController::class, 'login']);
 Route::get('dashboard', [UserController::class, 'dashboard'])->middleware('checkLogin');
+Route::get('edit/{id}', [UserController::class, 'edit']);
+Route::put('edit/{id}', [UserController::class, 'update']);
+Route::get('delete/{id}', [UserController::class, 'delete']);
+// Route::post('update', [UserController::class, 'update']);
+Route::get('blogs', [BlogController::class, 'showAllBlogs']);

@@ -39,16 +39,13 @@ class UserController extends Controller
     {
         $req->validate([
             "uname" => "required | min : 5 | max : 20",
-            "email" => "required",
+            "email" => "required | unique:users,email",
             "upass" => "required | min : 5",
             "cpass" => "required | min : 5",
             "profileImage" => "required"
         ]);
         $userDetails = $req->input();
-        // $color = "danger";
         if ($userDetails['upass'] !== $userDetails['cpass']) {
-            // $req->session()->flash("message" , "Password didn't matched");
-            // return redirect("signup");
             return Redirect::back()->withErrors(['msg' => "Password din't matched"]);
         }
         // $color = "success";
@@ -81,8 +78,37 @@ class UserController extends Controller
 
     public function dashboard() 
     {
-        $users = User::all();
+        $users = User::paginate(5);
         return view('dashboard', ['users' => $users]);
+    }
+
+    public function edit($id)
+    {
+        $user = User::find($id);
+        // return $user;
+        return view('edit', ['user' => $user]);
+
+    }
+
+    public function update(Request $req, $id)
+    {
+        // return "updating".$id;
+        $file = $req->file('profileImage');
+        $ext = $file->getClientOriginalExtension();
+        $updated_image = $img = time().'.'.$ext;
+        $file->move('uploads/images', $img);
+        User::where('id', $id)->update([
+            "name" => $req->uname,
+            "email" => $req->email,
+            "profile_pic" => $updated_image
+        ]);
+        return redirect('dashboard');
+    }
+
+    public function delete($id)
+    {
+        User::where('id', $id)->delete();
+        return redirect('dashboard');
     }
 
 }

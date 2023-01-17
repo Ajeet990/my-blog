@@ -20,7 +20,7 @@
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                <a class="nav-link" href="blogs">Blogs</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,10 +61,12 @@
           </div>
         </div>
       </nav>
+
+
       @yield('content')
 
 
-      <div class="bg-primary my-4">
+      <div class="bg-primary my-4 d-block">
         <div class="container">
             all copyright reserve 2023 <br>
             Ajeet chaudhary | ajeetch@ideafoundation.in <br> 

@@ -18,6 +18,7 @@
                     <th scope="col">Email</th>
                     <th scope="col">Profile</th>
                     <th scope="col">Registered date</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,11 +29,23 @@
                     <td>{{$user['email']}}</td>
                     <td><img src="{{ asset('uploads/images/'.$user['profile_pic']) }}" width="100px" alt="User Image"></td>
                     <td>{{$user['created_at']}}</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="{{ url('edit', $user['id']) }}">Edit</a>
+                        <a class="btn btn-primary btn-sm" href="{{ url('delete', $user['id']) }}">Delete</a>
+                        <a class="btn btn-primary btn-sm" href="">Add</a>
+                    </td>
                 </tr>
                 @endforeach
                 
             </tbody>
         </table>
+        <span class="float-end">{{$users->links()}}</span>
+        <style>
+            .w-5{
+                display: none;
+            }
+        </style>
+
     </div>
 </body>
 </html>
