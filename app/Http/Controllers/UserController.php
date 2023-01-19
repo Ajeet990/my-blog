@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
@@ -22,6 +23,7 @@ class UserController extends Controller
             if (Hash::check($userDetails['upass'], $userDetailsDB['password']))
             {
                 $req->session()->put('userEmail', $userDetails['email']);
+                $req->session()->put('userId', $userDetailsDB['id']);
                 $req->session()->flash('login', true);
                 return redirect('dashboard');
             } else {
@@ -42,7 +44,7 @@ class UserController extends Controller
             "email" => "required | unique:users,email",
             "upass" => "required | min : 5",
             "cpass" => "required | min : 5",
-            "profileImage" => "required"
+            "profileImage" => "required|image|mimes:jpg,jpeg,png,gif|max:2048"
         ]);
         $userDetails = $req->input();
         if ($userDetails['upass'] !== $userDetails['cpass']) {
@@ -92,16 +94,32 @@ class UserController extends Controller
 
     public function update(Request $req, $id)
     {
-        // return "updating".$id;
-        $file = $req->file('profileImage');
-        $ext = $file->getClientOriginalExtension();
-        $updated_image = $img = time().'.'.$ext;
-        $file->move('uploads/images', $img);
-        User::where('id', $id)->update([
-            "name" => $req->uname,
-            "email" => $req->email,
-            "profile_pic" => $updated_image
-        ]);
+        // $file = $req->file('profileImage');
+        // $ext = $file->getClientOriginalExtension();
+        // $updated_image = $img = time().'.'.$ext;
+        // $file->move('uploads/images', $img);
+        // User::where('id', $id)->update([
+        //     "name" => $req->uname,
+        //     "email" => $req->email,
+        //     "profile_pic" => $updated_image
+        // ]);
+        // return redirect('dashboard');
+        $user = User::find($id);
+        $user->name = $req->uname;
+        $user->email = $req->email;
+        if ($req->hasFile('profileImage')) {
+            $destination = 'uploads/images/'.$req->profile_pic;
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $req->file('profileImage');
+            $ext = $file->getClientOriginalExtension();
+            // return $ext;
+            $image = time().'.'.$ext;
+            $file->move('uploads/images/', $image);
+            $user->profile_pic = $image;
+        }
+        $user->update();
         return redirect('dashboard');
     }
 

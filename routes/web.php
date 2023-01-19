@@ -26,9 +26,12 @@ Route::view("signup", "registration");
 Route::post('register', [UserController::class, 'register']);
 Route::view('login', "login");
 Route::post('userLogin', [UserController::class, 'login']);
-Route::get('dashboard', [UserController::class, 'dashboard'])->middleware('checkLogin');
+Route::group(['middleware' => ['checkLogin']], function() {
+    Route::get('dashboard', [UserController::class, 'dashboard']);
+    Route::get('blogs', [BlogController::class, 'showAllBlogs']);
+});
 Route::get('edit/{id}', [UserController::class, 'edit']);
 Route::put('edit/{id}', [UserController::class, 'update']);
 Route::get('delete/{id}', [UserController::class, 'delete']);
 // Route::post('update', [UserController::class, 'update']);
-Route::get('blogs', [BlogController::class, 'showAllBlogs']);
+Route::post('addNewBlog', [BlogController::class, 'addNewBlog']);
